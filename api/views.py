@@ -97,8 +97,11 @@ def register(request, user):
 
 @csrf_exempt
 def login(request):
-	username = request.POST['username']
-	password = request.POST['password']
+
+	payload = json.loads(request.body)
+
+	username = payload['username']
+	password = payload['password']
 
 	users = UserTab.objects.filter(name=username)
 	if not users.exists():
@@ -115,10 +118,7 @@ def login(request):
 	user.access_token = access_token
 	user.save()
 
-	response = {
-		'access_token': access_token,
-		'user': user.to_dict()
-	}
+	response = dict(user.to_dict().items() + {"access_token": access_token}.items())
 
 	return HttpResponse(json.dumps(response), content_type='Application/Json')
 

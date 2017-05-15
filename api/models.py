@@ -40,6 +40,7 @@ class EventTab(models.Model):
 
 	def to_dict(self):
 		return ({
+			'id': self.id,
 			'create_time': self.create_time,
 			'start_date': self.start_date,
 			'end_date': self.end_date,
