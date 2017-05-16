@@ -14,15 +14,15 @@ def run():
 	LikeTab.objects.all().delete()
 	EventCategoryTab.objects.all().delete()
 
-	now = timezone.now()
-	end = now + datetime.timedelta(days=1)
+	now = int(timezone.now().strftime('%s'))
+	end = int((timezone.now() + datetime.timedelta(days=1)).strftime('%s'))
 
 	# Create 5 events
-	event1 = EventTab(title="Garena Event1", description="Test1", create_time=now.strftime('%s'), start_date=now.strftime('%s'), end_date=end.strftime('%s'), latitude=1.300981, longitude=103.788636)
-	event2 = EventTab(title="Garena Event2", description="Test2", create_time=now.strftime('%s'), start_date=now.strftime('%s'), end_date=end.strftime('%s'), latitude=1.300981, longitude=103.788636)
-	event3 = EventTab(title="Garena Event3", description="Test3", create_time=now.strftime('%s'), start_date=now.strftime('%s'), end_date=end.strftime('%s'), latitude=1.300981, longitude=103.788636)
-	event4 = EventTab(title="Garena Event4", description="Test4", create_time=now.strftime('%s'), start_date=now.strftime('%s'), end_date=end.strftime('%s'), latitude=1.300981, longitude=103.788636)
-	event5 = EventTab(title="Garena Event5", description="Test5", create_time=now.strftime('%s'), start_date=now.strftime('%s'), end_date=end.strftime('%s'), latitude=1.300981, longitude=103.788636)
+	event1 = EventTab(title="Garena Event1", description="Test1", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
+	event2 = EventTab(title="Garena Event2", description="Test2", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
+	event3 = EventTab(title="Garena Event3", description="Test3", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
+	event4 = EventTab(title="Garena Event4", description="Test4", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
+	event5 = EventTab(title="Garena Event5", description="Test5", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
 
 	event1.save()
 	event2.save()
@@ -31,11 +31,11 @@ def run():
 	event5.save()
 
 	# Create 5 admin users
-	user1 = UserTab(name="superuser1", email="fakeemail1@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now.strftime("%s"))
-	user2 = UserTab(name="superuser2", email="fakeemail2@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now.strftime("%s"))
-	user3 = UserTab(name="superuser3", email="fakeemail3@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now.strftime("%s"))
-	user4 = UserTab(name="superuser4", email="fakeemail4@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now.strftime("%s"))
-	user5 = UserTab(name="superuser5", email="fakeemail5@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now.strftime("%s"))
+	user1 = UserTab(name="superuser1", email="fakeemail1@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now)
+	user2 = UserTab(name="superuser2", email="fakeemail2@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now)
+	user3 = UserTab(name="superuser3", email="fakeemail3@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now)
+	user4 = UserTab(name="superuser4", email="fakeemail4@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now)
+	user5 = UserTab(name="superuser5", email="fakeemail5@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now)
 
 	user1.save()
 	user2.save()

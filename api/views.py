@@ -36,8 +36,7 @@ def event_index(request, user):
 
 @is_login
 def event_detail(request, user):
-	params = request.GET
-	event_id = params['event_id']
+	event_id = request.GET['event_id']
 	event = EventTab.objects.filter(id=event_id)
 
 	if not event.exists():
@@ -58,10 +57,12 @@ def event_detail(request, user):
 	return HttpResponse(json.dumps(response), content_type='Application/Json')
 
 
+@csrf_exempt
 @is_login
 def like(request, user):
-	user_id = request.GET['user_id']
-	event_id = request.GET['event_id']
+	payload = json.loads(request.body)
+	user_id = payload['user_id']
+	event_id = payload['event_id']
 	like = LikeTab.filter(user_id=user_id, event_id=event_id)
 	if like.exists():
 		return HttpResponse(json.dumps({"error": "Already Liked"}), status=200)
@@ -71,21 +72,25 @@ def like(request, user):
 	return HttpResponse(content_type='Application/Json', status=200)
 
 
+@csrf_exempt
 @is_login
 def comment(request, user):
-	user_id = request.GET['user_id']
-	event_id = request.GET['event_id']
-	comment_description = request.GET['description']
+	payload = json.loads(request.body)
+	user_id = payload['user_id']
+	event_id = payload['event_id']
+	comment_description = payload['description']
 
 	comment = Comment(user_id=user_id, event_id=event_id, description=comment_description)
 	comment.save()
 	return HttpResponse(content_type='Application/Json', status=200)
 
 
+@csrf_exempt
 @is_login
 def register(request, user):
-	user_id = request.GET['user_id']
-	event_id = request.GET['event_id']
+	payload = json.loads(request.body)
+	user_id = payload['user_id']
+	event_id = payload['event_id']
 	registration = RegistrationTab.filter(user_id=user_id, event_id=event_id)
 	if registration.exists():
 		return HttpResponse(json.dumps({"error": "Already Liked"}), status=200)
@@ -97,9 +102,7 @@ def register(request, user):
 
 @csrf_exempt
 def login(request):
-
 	payload = json.loads(request.body)
-
 	username = payload['username']
 	password = payload['password']
 
@@ -118,7 +121,19 @@ def login(request):
 	user.access_token = access_token
 	user.save()
 
-	response = dict(user.to_dict().items() + {"access_token": access_token}.items())
+	participating_events_id = RegistrationTab.objects.filter(user_id=user.id)
+	participating_events = {'participating_events': {}}
+	for reg in participating_events_id:
+		event = EventTab.objects.get(id=reg.event_id).to_dict()
+		participating_events['participating_events'].update({event['id']: event})
+
+	liked_events_id = LikeTab.objects.filter(user_id=user.id)
+	liked_events = {'liked_events': {}}
+	for like in liked_events_id:
+		event = EventTab.objects.get(id=like.event_id).to_dict()
+		liked_events['liked_events'].update({event['id']: event})
+
+	response = dict(user.to_dict().items() + {"access_token": access_token}.items() + participating_events.items() + liked_events.items())
 
 	return HttpResponse(json.dumps(response), content_type='Application/Json')
 
