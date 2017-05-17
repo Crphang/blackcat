@@ -22,14 +22,13 @@ def index(request):
 @is_login
 def event_index(request, user):
 	events = EventTab.objects.all()
-	response = map(
-		lambda event:
-			dict(event.to_dict().items() + {
-				'participants_count': RegistrationTab.objects.filter(event_id=event.id).count(),
-				'likes_count': LikeTab.objects.filter(event_id=event.id).count(),
-				'comments_count': LikeTab.objects.filter(event_id=event.id).count()
-			}.items()),
-		events)
+	response = {}
+	for event in events:
+		response[event.id] = dict(event.to_dict().items() + {
+			'participants_count': RegistrationTab.objects.filter(event_id=event.id).count(),
+			'likes_count': LikeTab.objects.filter(event_id=event.id).count(),
+			'comments_count': LikeTab.objects.filter(event_id=event.id).count()
+		}.items())
 
 	return HttpResponse(json.dumps(response), content_type='Application/Json')
 
@@ -102,7 +101,9 @@ def register(request, user):
 
 @csrf_exempt
 def login(request):
+	print request.body
 	payload = json.loads(request.body)
+	print(payload)
 	username = payload['username']
 	password = payload['password']
 
