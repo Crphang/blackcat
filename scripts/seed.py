@@ -47,10 +47,12 @@ def run():
 	like1 = LikeTab(user_id=user1.id, event_id=event1.id)
 	like2 = LikeTab(user_id=user2.id, event_id=event2.id)
 	like3 = LikeTab(user_id=user3.id, event_id=event1.id)
+	like4 = LikeTab(user_id=user1.id, event_id=event2.id)
 
 	like1.save()
 	like2.save()
 	like3.save()
+	like4.save()
 
 	# Create 3 comments
 	comment1 = CommentTab(user_id=user1.id, event_id=event1.id, description="I am excited for this event")
