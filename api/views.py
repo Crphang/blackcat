@@ -60,26 +60,25 @@ def event_detail(request, user):
 @is_login
 def like(request, user):
 	payload = json.loads(request.body)
-	user_id = payload['user_id']
 	event_id = payload['event_id']
-	like = LikeTab.filter(user_id=user_id, event_id=event_id)
+	like = LikeTab.objects.filter(user_id=user.id, event_id=event_id)
 	if like.exists():
 		return HttpResponse(json.dumps({"error": "Already Liked"}), status=200)
 
-	like = LikeTab(user_id=user_id, event_id=event_id)
+	like = LikeTab(user_id=user.id, event_id=event_id)
 	like.save()
-	return HttpResponse(content_type='Application/Json', status=200)
 
+	event = EventTab.objects.get(id=event_id).to_dict()
+	return HttpResponse(json.dumps(event), content_type='Application/Json', status=200)
 
 @csrf_exempt
 @is_login
 def comment(request, user):
 	payload = json.loads(request.body)
-	user_id = payload['user_id']
 	event_id = payload['event_id']
 	comment_description = payload['description']
 
-	comment = Comment(user_id=user_id, event_id=event_id, description=comment_description)
+	comment = Comment(user_id=user.id, event_id=event_id, description=comment_description)
 	comment.save()
 	return HttpResponse(content_type='Application/Json', status=200)
 
@@ -88,15 +87,17 @@ def comment(request, user):
 @is_login
 def register(request, user):
 	payload = json.loads(request.body)
-	user_id = payload['user_id']
+	print(payload)
 	event_id = payload['event_id']
-	registration = RegistrationTab.filter(user_id=user_id, event_id=event_id)
+	registration = RegistrationTab.objects.filter(user_id=user.id, event_id=event_id)
 	if registration.exists():
-		return HttpResponse(json.dumps({"error": "Already Liked"}), status=200)
+		return HttpResponse(json.dumps({"error": "Already Registered"}), status=200)
 
-	registration = RegistrationTab(user_id=user_id, event_id=event_id)
+	registration = RegistrationTab(user_id=user.id, event_id=event_id)
 	registration.save()
-	return HttpResponse(content_type='Application/Json', status=200)
+
+	event = EventTab.objects.get(id=event_id).to_dict()
+	return HttpResponse(json.dumps(event), content_type='Application/Json', status=200)
 
 
 @csrf_exempt
