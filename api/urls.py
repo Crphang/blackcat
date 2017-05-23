@@ -11,5 +11,5 @@ urlpatterns = patterns(
 	url(r'^event\/register$', views.register, name='register'),
 	url(r'^user\/login$', views.login, name='login'),
 	url(r'^user\/logout$', views.logout, name='logout'),
-	url(r'^category\/get_categories$', views.categories_index, name='categories_index')
+	url(r'^category\/get_categories$', views.categories_index, name='categories_index'),
 )

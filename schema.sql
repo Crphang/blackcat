@@ -17,7 +17,7 @@ ENGINE=InnoDB;
 CREATE TABLE IF NOT EXISTS `black_cat_db`.`image_tab` (
 	`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	`event_id` BIGINT UNSIGNED NOT NULL,
-	`url` VARCHAR(256) NOT NULL,
+	`file` VARCHAR(256) NOT NULL,
 	PRIMARY KEY (`id`, `event_id`)
 )
 COLLATE='utf8mb4_unicode_ci'
@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS `black_cat_db`.`comment_tab` (
 	`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	`user_id` BIGINT UNSIGNED NOT NULL,
 	`event_id` BIGINT UNSIGNED NOT NULL,
+	`create_time` INT UNSIGNED NOT NULL,
 	`description` TEXT NOT NULL,
 	PRIMARY KEY (`id`, `event_id`)
 )

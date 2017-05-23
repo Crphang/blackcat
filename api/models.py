@@ -61,7 +61,7 @@ class EventTab(models.Model):
 class ImageTab(models.Model):
 	id = models.AutoField(primary_key=True)
 	event_id = models.PositiveIntegerField()
-	url = models.CharField(max_length=256)
+	file = models.FileField(upload_to="media/")
 
 	class Config:
 		db_for_write = 'black_cat_db.write'
@@ -105,6 +105,7 @@ class RegistrationTab(models.Model):
 
 class CommentTab(models.Model):
 	id = models.AutoField(primary_key=True)
+	create_time = models.PositiveIntegerField()
 	user_id = models.PositiveIntegerField()
 	event_id = models.PositiveIntegerField()
 	description = models.TextField()

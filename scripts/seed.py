@@ -81,13 +81,14 @@ def run():
 	like11.save()
 
 	# Create 3 comments
-	comment1 = CommentTab(user_id=user1.id, event_id=event1.id, description="I am excited for this event")
-	comment2 = CommentTab(user_id=user1.id, event_id=event1.id, description="This event is not fun")
-	comment3 = CommentTab(user_id=user2.id, event_id=event2.id, description="I am excited for this event")
+	comment1 = CommentTab(user_id=user1.id, event_id=event1.id, description="I am excited for this event", create_time=now)
+	comment2 = CommentTab(user_id=user1.id, event_id=event1.id, description="This event is not fun", create_time=now)
+	comment3 = CommentTab(user_id=user2.id, event_id=event2.id, description="I am excited for this event", create_time=now)
+	comment4 = CommentTab(user_id=user2.id, event_id=event2.id, description="Nullam ut tincidunt nunc. Petus lacus, commodo eget justo ut, rutrum varius nunc.", create_time=now)
 
 	comment1.save()
 	comment2.save()
-	comment3.save()
+	comment4.save()
 
 	# Create 3 registration
 	registration1 = RegistrationTab(user_id=user1.id, event_id=event1.id)

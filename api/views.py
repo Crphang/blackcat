@@ -1,7 +1,6 @@
-from api.models import EventTab, UserTab, CategoryTab, LikeTab, CommentTab, RegistrationTab, EventCategoryTab
+from api.models import EventTab, UserTab, CategoryTab, LikeTab, CommentTab, RegistrationTab, EventCategoryTab, ImageTab
 from api.helper import get_user_by_id, is_login
 
-# Create your views here.
 from django.http import HttpResponse
 from django.contrib.auth.hashers import check_password
 from django.utils import timezone
@@ -43,14 +42,15 @@ def event_detail(request, user):
 
 	participants = map(lambda x: get_user_by_id(x.user_id), RegistrationTab.objects.filter(event_id=event_id))
 	likes = map(lambda x: get_user_by_id(x.user_id), LikeTab.objects.filter(event_id=event_id))
-	comments = map(lambda x: {"user": get_user_by_id(x.user_id), "comment": x.description}, CommentTab.objects.filter(event_id=event_id))
-
+	comments = map(lambda x: {"user": get_user_by_id(x.user_id), "comment": x.description, "time": x.create_time}, CommentTab.objects.filter(event_id=event_id))
+	images = map(lambda x: x.file.url, ImageTab.objects.filter(event_id=event_id))
 	event = event.first()
 	response = dict(
 		{
 			'likes': likes,
 			'comments': comments,
 			'participants': participants,
+			'images': images,
 		}.items() + event.to_dict().items())
 
 	return HttpResponse(json.dumps(response), content_type='Application/Json')
@@ -78,9 +78,13 @@ def comment(request, user):
 	event_id = payload['event_id']
 	comment_description = payload['description']
 
-	comment = Comment(user_id=user.id, event_id=event_id, description=comment_description)
+	now = int(timezone.now().strftime('%s'))
+	comment = CommentTab(user_id=user.id, event_id=event_id, description=comment_description, create_time=now)
 	comment.save()
-	return HttpResponse(content_type='Application/Json', status=200)
+
+	new_comment = {"user": get_user_by_id(comment.user_id), "event_id": comment.event_id, "comment": comment.description, "time": comment.create_time}
+
+	return HttpResponse(json.dumps(new_comment), content_type='Application/Json', status=200)
 
 
 @csrf_exempt

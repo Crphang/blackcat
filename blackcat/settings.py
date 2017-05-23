@@ -23,13 +23,15 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
+MEDIA_URL = '/'
+MEDIA_ROOT = os.path.join(BASE_DIR, '')
+
 ALLOWED_HOSTS = []
 
 
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -37,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django_extensions',
     'api',
+    'admin',
 )
 
 PASSWORD_HASHERS = (
