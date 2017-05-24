@@ -1,4 +1,4 @@
-from api.models import EventTab, UserTab, CategoryTab, LikeTab, CommentTab, RegistrationTab, EventCategoryTab
+from api.models import EventTab, UserTab, ImageTab, CategoryTab, LikeTab, CommentTab, RegistrationTab, EventCategoryTab
 
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password
@@ -7,6 +7,7 @@ import datetime
 
 def run():
 	EventTab.objects.all().delete()
+	ImageTab.objects.all().delete()
 	UserTab.objects.all().delete()
 	CategoryTab.objects.all().delete()
 	CommentTab.objects.all().delete()
@@ -23,12 +24,30 @@ def run():
 	event3 = EventTab(title="Garena Event3", description="Test3", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
 	event4 = EventTab(title="Garena Event4", description="Test4", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
 	event5 = EventTab(title="Garena Event5", description="Test5", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
-
+	event6 = EventTab(title="Garena Event6", description="Test5", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
+	event7 = EventTab(title="Garena Event7", description="Test5", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
+	event8 = EventTab(title="Garena Event8", description="Test5", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
+	event9 = EventTab(title="Garena Event9", description="Test5", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
+	event10 = EventTab(title="Garena Event10", description="Test5", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
+	event11 = EventTab(title="Garena Event11", description="Test5", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
+	event12 = EventTab(title="Garena Event12", description="Test5", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
+	event13 = EventTab(title="Garena Event13", description="Test5", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
+	event14 = EventTab(title="Garena Event14", description="Test5", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
+	
 	event1.save()
 	event2.save()
 	event3.save()
 	event4.save()
 	event5.save()
+	event6.save()
+	event7.save()
+	event8.save()
+	event9.save()
+	event10.save()
+	event11.save()
+	event12.save()
+	event13.save()
+	event14.save()
 
 	# Create 5 admin users
 	user1 = UserTab(name="superuser1", email="fakeemail1@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now)

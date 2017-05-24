@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.contrib.auth.hashers import check_password
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 import json
 import jwt
@@ -20,14 +21,29 @@ def index(request):
 
 @is_login
 def event_index(request, user):
-	events = EventTab.objects.all()
+	page = request.GET.get('page_count')
+	start_date = request.GET.get('start_date')
+	end_date = request.GET.get('end_date')
+
+	events = EventTab.objects.filter(start_date__gte=start_date, end_date__lte=end_date)
+	paginator = Paginator(events, 5)
+
+	try:
+		events = paginator.page(page)
+	except PageNotAnInteger:
+		page = 1
+		events = paginator.page(1)
+	except EmptyPage:
+		page = 1
+		events = paginator.page(1)
 	response = {}
 	for event in events:
 		response[event.id] = dict(event.to_dict().items() + {
 			'participants_count': RegistrationTab.objects.filter(event_id=event.id).count(),
 			'likes_count': LikeTab.objects.filter(event_id=event.id).count(),
-			'comments_count': LikeTab.objects.filter(event_id=event.id).count()
-		}.items())
+			'page_count': page
+		}.items())		
+	response['total_pages'] = paginator.num_pages
 
 	return HttpResponse(json.dumps(response), content_type='Application/Json')
 
