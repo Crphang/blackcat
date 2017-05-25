@@ -3,7 +3,9 @@ from api.models import EventTab, UserTab, ImageTab, CategoryTab, LikeTab, Commen
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password
 import datetime
+import bcrypt
 
+import os
 
 def run():
 	EventTab.objects.all().delete()
@@ -15,14 +17,17 @@ def run():
 	LikeTab.objects.all().delete()
 	EventCategoryTab.objects.all().delete()
 
+	three_hours_ago = int((timezone.now() - datetime.timedelta(hours=3)).strftime('%s'))
 	now = int(timezone.now().strftime('%s'))
+	three_hours_later = int((timezone.now() + datetime.timedelta(hours=3)).strftime('%s'))
 	end = int((timezone.now() + datetime.timedelta(days=1)).strftime('%s'))
+	a_day_and_more_later = int((timezone.now() + datetime.timedelta(days=1) + datetime.timedelta(hours=3)).strftime('%s'))
 
 	# Create 5 events
-	event1 = EventTab(title="Garena Event1", description="Test1", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
-	event2 = EventTab(title="Garena Event2", description="Test2", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
-	event3 = EventTab(title="Garena Event3", description="Test3", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
-	event4 = EventTab(title="Garena Event4", description="Test4", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
+	event1 = EventTab(title="Garena Event1", description="Test1", create_time=now, start_date=three_hours_ago, end_date=three_hours_later, latitude=1.300981, longitude=103.788636)
+	event2 = EventTab(title="Garena Event2", description="Test2", create_time=now, start_date=three_hours_ago, end_date=three_hours_later, latitude=1.300981, longitude=103.788636)
+	event3 = EventTab(title="Garena Event3", description="Test3", create_time=now, start_date=three_hours_ago, end_date=three_hours_later, latitude=1.300981, longitude=103.788636)
+	event4 = EventTab(title="Garena Event4", description="Test4", create_time=now, start_date=three_hours_ago, end_date=end, latitude=1.300981, longitude=103.788636)
 	event5 = EventTab(title="Garena Event5", description="Test5", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
 	event6 = EventTab(title="Garena Event6", description="Test5", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
 	event7 = EventTab(title="Garena Event7", description="Test5", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
@@ -33,6 +38,7 @@ def run():
 	event12 = EventTab(title="Garena Event12", description="Test5", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
 	event13 = EventTab(title="Garena Event13", description="Test5", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
 	event14 = EventTab(title="Garena Event14", description="Test5", create_time=now, start_date=now, end_date=end, latitude=1.300981, longitude=103.788636)
+	event_tomorrow = EventTab(title="Tomorrow's Event", description="Check if filter works", create_time=now, start_date=end, end_date=a_day_and_more_later, latitude=1.300981, longitude=103.788636)
 	
 	event1.save()
 	event2.save()
@@ -48,19 +54,16 @@ def run():
 	event12.save()
 	event13.save()
 	event14.save()
+	event_tomorrow.save()
 
 	# Create 5 admin users
+
 	user1 = UserTab(name="superuser1", email="fakeemail1@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now)
 	user2 = UserTab(name="superuser2", email="fakeemail2@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now)
 	user3 = UserTab(name="superuser3", email="fakeemail3@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now)
-	user4 = UserTab(name="superuser4", email="fakeemail4@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now)
-	user5 = UserTab(name="superuser5", email="fakeemail5@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now)
-	user6 = UserTab(name="superuser6", email="fakeemail6@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now)
-	user7 = UserTab(name="superuser7", email="fakeemail7@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now)
-	user8 = UserTab(name="superuser8", email="fakeemail8@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now)
-	user9 = UserTab(name="superuser9", email="fakeemail9@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now)
-	user10 = UserTab(name="superuser10", email="fakeemail10@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now)
-	user11 = UserTab(name="superuser11", email="fakeemail11@gmail.com", is_admin=1, password=make_password("Garena.com"), create_time=now)
+	user4 = UserTab(name="user4", email="fakeemail4@gmail.com", is_admin=0, password=make_password("Garena.com"), create_time=now)
+	user5 = UserTab(name="user5", email="fakeemail5@gmail.com", is_admin=0, password=make_password("Garena.com"), create_time=now)
+	user6 = UserTab(name="user6", email="fakeemail6@gmail.com", is_admin=0, password=make_password("Garena.com"), create_time=now)
 
 	user1.save()
 	user2.save()
@@ -68,11 +71,6 @@ def run():
 	user4.save()
 	user5.save()
 	user6.save()
-	user7.save()
-	user8.save()
-	user9.save()
-	user10.save()
-	user11.save()
 
 	# Create 3 likes for each user to each event
 	like1 = LikeTab(user_id=user1.id, event_id=event1.id)
@@ -82,10 +80,7 @@ def run():
 	like5 = LikeTab(user_id=user4.id, event_id=event2.id)
 	like6 = LikeTab(user_id=user5.id, event_id=event2.id)
 	like7 = LikeTab(user_id=user6.id, event_id=event2.id)
-	like8 = LikeTab(user_id=user7.id, event_id=event2.id)
-	like9 = LikeTab(user_id=user8.id, event_id=event2.id)
-	like10 = LikeTab(user_id=user9.id, event_id=event2.id)
-	like11 = LikeTab(user_id=user10.id, event_id=event2.id)
+
 
 	like1.save()
 	like2.save()
@@ -94,10 +89,7 @@ def run():
 	like5.save()
 	like6.save()
 	like7.save()
-	like8.save()
-	like9.save()
-	like10.save()
-	like11.save()
+
 
 	# Create 3 comments
 	comment1 = CommentTab(user_id=user1.id, event_id=event1.id, description="I am excited for this event", create_time=now)

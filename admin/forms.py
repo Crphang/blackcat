@@ -1,10 +1,17 @@
 from django import forms
-from api.models import ImageTab, EventTab, CategoryTab, EventCategoryTab
+from api.models import ImageTab, EventTab, CategoryTab, EventCategoryTab, UserTab
 
 class ImageTabForm(forms.ModelForm):
     class Meta:
         model = ImageTab
         fields = ('file', 'event_id', )
+
+class ImageForm(forms.ModelForm):
+
+    class Meta:
+        model = ImageTab
+        fields = ('file', )
+
 
 class EventTabForm(forms.ModelForm):
 	class Meta:
@@ -16,7 +23,14 @@ class CategoryTabForm(forms.ModelForm):
 		model = CategoryTab
 		fields = ('name', )
 
-class EventCategoryTab(forms.ModelForm):
+class EventCategoryTabForm(forms.ModelForm):
 	class Meta:
 		model = EventCategoryTab
 		fields = ('category_id', 'event_id',)
+
+class UserTabForm(forms.ModelForm):
+	password = forms.CharField(widget=forms.PasswordInput())
+
+	class Meta:
+		model = UserTab
+		fields = ('name', 'password', )

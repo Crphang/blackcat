@@ -6,6 +6,7 @@ from django.contrib.auth.hashers import check_password
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.middleware.csrf import get_token
 
 import json
 import jwt
@@ -22,11 +23,21 @@ def index(request):
 @is_login
 def event_index(request, user):
 	page = request.GET.get('page_count')
-	start_date = request.GET.get('start_date')
-	end_date = request.GET.get('end_date')
+	start_date_milliseconds = int(request.GET.get('start_date'))
+	end_date_milliseconds = int(request.GET.get('end_date'))
+	category = request.GET.get('category')
 
-	events = EventTab.objects.filter(start_date__gte=start_date, end_date__lte=end_date)
+	start_date_seconds = start_date_milliseconds / 1000
+	end_date_seconds = end_date_milliseconds / 1000
+
+	if category == 'All':
+		events = EventTab.objects.filter(start_date__gte=start_date_seconds, end_date__lte=end_date_seconds)
+	else:
+		event_ids_with_category = map(lambda x: EventTab.objects.get(id=x.event_id).id, EventCategoryTab.objects.filter(category_id=category))
+		events = EventTab.objects.filter(id__in=event_ids_with_category).filter(start_date__gte=start_date_seconds, end_date__lte=end_date_seconds)
+
 	paginator = Paginator(events, 5)
+
 
 	try:
 		events = paginator.page(page)
@@ -38,11 +49,25 @@ def event_index(request, user):
 		events = paginator.page(1)
 	response = {}
 	for event in events:
-		response[event.id] = dict(event.to_dict().items() + {
-			'participants_count': RegistrationTab.objects.filter(event_id=event.id).count(),
-			'likes_count': LikeTab.objects.filter(event_id=event.id).count(),
-			'page_count': page
-		}.items())		
+		event_category = EventCategoryTab.objects.filter(event_id=event.id)
+		if event_category.exists():
+			print 'THIS IS EVENT CATEGORY'
+			print event_category
+			print event_category[0]
+			print event_category[0].event_id
+			category = CategoryTab.objects.get(id=event_category[0].category_id)
+			response[event.id] = dict(event.to_dict().items() + {
+				'participants_count': RegistrationTab.objects.filter(event_id=event.id).count(),
+				'likes_count': LikeTab.objects.filter(event_id=event.id).count(),
+				'page_count': page,
+				'category': category.to_dict()
+			}.items())	
+		else:
+			response[event.id] = dict(event.to_dict().items() + {
+				'participants_count': RegistrationTab.objects.filter(event_id=event.id).count(),
+				'likes_count': LikeTab.objects.filter(event_id=event.id).count(),
+				'page_count': page,
+			}.items())
 	response['total_pages'] = paginator.num_pages
 
 	return HttpResponse(json.dumps(response), content_type='Application/Json')
@@ -157,7 +182,11 @@ def login(request):
 
 	response = dict(user.to_dict().items() + {"access_token": access_token}.items() + participating_events.items() + liked_events.items())
 
-	return HttpResponse(json.dumps(response), content_type='Application/Json')
+	response = HttpResponse(json.dumps(response), content_type='Application/Json')
+	response['X-CSRFToken'] = get_token(request)
+	print('THIS IS RESPONSE')
+
+	return response
 
 
 @csrf_exempt
