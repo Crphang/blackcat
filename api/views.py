@@ -96,8 +96,6 @@ def event_detail(request, user):
 
 	return HttpResponse(json.dumps(response), content_type='Application/Json')
 
-
-@csrf_exempt
 @is_login
 def like(request, user):
 	payload = json.loads(request.body)
@@ -112,7 +110,6 @@ def like(request, user):
 	event = EventTab.objects.get(id=event_id).to_dict()
 	return HttpResponse(json.dumps(event), content_type='Application/Json', status=200)
 
-@csrf_exempt
 @is_login
 def comment(request, user):
 	payload = json.loads(request.body)
@@ -128,7 +125,6 @@ def comment(request, user):
 	return HttpResponse(json.dumps(new_comment), content_type='Application/Json', status=200)
 
 
-@csrf_exempt
 @is_login
 def register(request, user):
 	payload = json.loads(request.body)
@@ -181,11 +177,10 @@ def login(request):
 		liked_events['liked_events'].update({event['id']: event})
 
 	response = dict(user.to_dict().items() + {"access_token": access_token}.items() + participating_events.items() + liked_events.items())
+	response['X-CSRFToken'] = get_token(request)
 
 	response = HttpResponse(json.dumps(response), content_type='Application/Json')
-	response['X-CSRFToken'] = get_token(request)
-	print('THIS IS RESPONSE')
-
+	
 	return response
 
 
