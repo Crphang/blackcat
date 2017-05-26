@@ -8,7 +8,6 @@ class UserTab(models.Model):
 	create_time = models.PositiveIntegerField()
 	access_token = models.CharField(max_length=1024)
 	email = models.CharField(max_length=256)
-	salt = models.CharField(max_length=256)
 	name = models.CharField(max_length=64)
 	password = models.CharField(max_length=256)
 	is_admin = models.IntegerField()
