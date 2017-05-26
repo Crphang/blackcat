@@ -1,12 +1,15 @@
-# Install Dependences
+# Install Dependencies
 
 `pip install -r requirements.txt`
 
 # Setup MySQL database
 
-Download MYSQL and create database `black_cat_db`
-Generate SQL DDL from google docs
-Create database schema in MYSQL
+Install mysql
+
+Run
+
+```mysql -u root -p < schema.sql```
+
 
 # Run Server
 `python manage.py runserver`
