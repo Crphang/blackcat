@@ -31,10 +31,10 @@ def event_index(request, user):
 	end_date_seconds = end_date_milliseconds / 1000
 
 	if category == 'All':
-		events = EventTab.objects.filter(start_date__gte=start_date_seconds, end_date__lte=end_date_seconds)
+		events = EventTab.objects.filter(start_date__gte=start_date_seconds, end_date__lte=end_date_seconds).order_by('id')
 	else:
 		event_ids_with_category = map(lambda x: EventTab.objects.get(id=x.event_id).id, EventCategoryTab.objects.filter(category_id=category))
-		events = EventTab.objects.filter(id__in=event_ids_with_category).filter(start_date__gte=start_date_seconds, end_date__lte=end_date_seconds)
+		events = EventTab.objects.filter(id__in=event_ids_with_category).filter(start_date__gte=start_date_seconds, end_date__lte=end_date_seconds).order_by('id')
 
 	paginator = Paginator(events, 5)
 
@@ -51,10 +51,6 @@ def event_index(request, user):
 	for event in events:
 		event_category = EventCategoryTab.objects.filter(event_id=event.id)
 		if event_category.exists():
-			print 'THIS IS EVENT CATEGORY'
-			print event_category
-			print event_category[0]
-			print event_category[0].event_id
 			category = CategoryTab.objects.get(id=event_category[0].category_id)
 			response[event.id] = dict(event.to_dict().items() + {
 				'participants_count': RegistrationTab.objects.filter(event_id=event.id).count(),
@@ -168,12 +164,24 @@ def login(request):
 	participating_events = {'participating_events': {}}
 	for reg in participating_events_id:
 		event = EventTab.objects.get(id=reg.event_id).to_dict()
+		event_category = EventCategoryTab.objects.filter(event_id=event['id'])
+		if event_category.exists():
+			category = CategoryTab.objects.get(id=event_category[0].category_id)
+			event = dict({
+				'category': category.to_dict(),
+				}.items() + event.items())
 		participating_events['participating_events'].update({event['id']: event})
 
 	liked_events_id = LikeTab.objects.filter(user_id=user.id)
 	liked_events = {'liked_events': {}}
 	for like in liked_events_id:
 		event = EventTab.objects.get(id=like.event_id).to_dict()
+		event_category = EventCategoryTab.objects.filter(event_id=event['id'])
+		if event_category.exists():
+			category = CategoryTab.objects.get(id=event_category[0].category_id)
+			event = dict({
+				'category': category.to_dict(),
+				}.items() + event.items())
 		liked_events['liked_events'].update({event['id']: event})
 
 	response = dict(user.to_dict().items() + {"access_token": access_token}.items() + participating_events.items() + liked_events.items())
