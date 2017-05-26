@@ -26,7 +26,7 @@ TEMPLATE_DEBUG = True
 MEDIA_URL = '/'
 MEDIA_ROOT = os.path.join(BASE_DIR, '')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
